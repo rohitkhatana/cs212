@@ -20,8 +20,41 @@ The Rule of poker
 8 - Straight Flush(9H,TH,JH,QH,KH)
 '''
 #max(iteratble_object, key=func)==>good to know
+#find() return -1 when not found <---> index() raise valueError when not found
+rank_map = {'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+def convert_char_to_num(char):
+    return int(char)
+def substitue_num_to_char(char):
+    if char in rank_map:
+        return rank_map[char]
+    else:
+        return char
+def card_ranks(cards):
+    "Return a list of the ranks, sorted with higher first."
+    # ['--23456789TJQKA'.index(r) for r,s in ['6H', 'AH']] peter sir solution
+    ranks = [r for r,s in cards]
+    ranks = map(substitue_num_to_char, ranks)
+    ranks = map(convert_char_to_num, ranks)
+            
+    ranks.sort(reverse=True)
+    return ranks
 
-def poker(hands)
+print card_ranks(['AC', '3D', '4S', 'KH']) #should output [14, 13, 4, 3]
+
+def kind(n, ranks):
+    """Return the first rank that this hand has exactky n of.
+    Return None if there is no n-of-a-kind in the hand."""
+    for r in ranks:
+        if ranks.count(r) == n: return r
+    return None
+
+def straight(ranks):
+    "Return True if the ordered ranks form a 5-card straight."
+    #peter solution
+    #using set data structure
+    return ranks == list(reversed(range(ranks[4], ranks[4]+5)))
+
+def poker(hands):
     return max(hand, key=hand_rank)
 
 def hand_rank(hand):
@@ -32,8 +65,16 @@ def test():
     sf = "6C 7C 8C 9C TC".split()
     fk = "9D 9H 9S 9C 7D".split()
     fh = "TD TC TH 7C 7D".split()
+    tp = "5S 5D 9H 9C 6S".split()
 
-    assert poker([sf, fk, fh]) == sf
+    fkranks = card_ranks(fk)
+    tpranks = card_ranks(tp)
+    assert kind(4, fkranks) == 9
+    assert kind(3, fkranks) == None
+    assert kind(2, fkranks) == None
+    assert kind(1, fkranks) == 7
+    
+    assert poaer([sf, fk, fh]) == sf
     assert poker([fk, fh]) == fk
     assert poker([fh, fh]) == fh
     assert poker([sf]) == sf
